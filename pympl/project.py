@@ -193,9 +193,9 @@ def load_project(project_path: str, strict: bool = True) -> Optional[Project]:
     with open(project_path) as f:
         try:
             yaml_values = yaml.load(f, Loader=yaml.FullLoader)
-            if strict:
-                template = str(pkgutil.get_data(__name__, "schema/project.schema.json"))
-                schema = json.loads(template)
+            template = pkgutil.get_data(__name__, "schema/project.schema.json")
+            if strict and template:
+                schema = json.loads(template.decode('utf-8'))
                 jsonschema.validate(yaml_values, schema)
 
             return Project.from_yaml(yaml_values, project_path)
